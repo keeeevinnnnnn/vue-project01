@@ -29,10 +29,12 @@ export default {
 <style scoped>
 .row {
   width: 100%;
-  padding-top: 20px;
   display: flex;
+  align-items: center;
 }
 .col {
+  height: 100%;
+  padding-top: 25px;
   width: 33.33%;
 }
 </style>

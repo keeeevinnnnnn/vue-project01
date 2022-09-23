@@ -1,37 +1,33 @@
 <template>
   <div class="row">
     <div class="header">
-      <button @click="toggleSelectText" class="selectBtn">
-        {{ selectText ? "選取" : "取消" }}
-      </button>
-      <button class="addBtn" @click="uploadAvatar">十</button>
-      <input
-        type="file"
-        multiple="multiple"
-        v-show="false"
-        ref="avatar"
-        @change="onFile"
-      />
+      <div class="headerLeft">
+        <button v-if="selectText === false" @click="deleteImages">
+          <i class="fa-solid fa-trash-can"></i>
+        </button>
+      </div>
+
+      <div class="headerRight">
+        <button @click="toggleSelectText" class="selectBtn">
+          {{ selectText ? "選取" : "取消" }}
+        </button>
+        <button class="addBtn" @click="uploadAvatar">十</button>
+        <input
+          type="file"
+          multiple="multiple"
+          v-show="false"
+          ref="avatar"
+          @change="onFile"
+        />
+      </div>
     </div>
     <div class="item">
-      <div
-        class="loadImage"
-        v-for="(item, index) in image"
-        :key="index"
-        @click="show(index)"
-      >
-        <img :src="item" />
-        <input
-          type="checkbox"
-          :value="item"
-          :cheched="images.includes(item)"
-          v-model="images"
-          v-show="selectText === false"
+      <div class="loadImage" v-for="(item, index) in image" :key="index">
+        <img
+          :src="`http://127.0.0.1:8080/image/${item}`"
+          @click="selectImage(item)"
         />
-        <button @click="deleteImages" v-show="selectText === false">
-          Delete
-        </button>
-        <div v-show="images.includes(item)" class="selectState">✅</div>
+        <div v-show="selectData.includes(item)" class="selectState">✅</div>
       </div>
     </div>
   </div>
@@ -45,30 +41,39 @@ export default {
   data() {
     return {
       image: [],
-      images: [],
       selectText: true,
-      activeIndex: -1,
+      selectData: [],
+      isShowSelect: false,
     };
+  },
+  mounted() {
+    axios
+      .get(`http://localhost:8081/images/?fromName=${this.image}&amount=50`)
+      .then((res) => {
+        res.data.forEach((e) => {
+          this.image.push(e);
+        });
+      });
   },
   methods: {
     // 模擬點擊
     uploadAvatar() {
       this.$refs.avatar.click();
     },
-    show(index) {
-      this.activeIndex = this.activeIndex == index ? -1 : index;
+    selectImage(item) {
+      // 拿到該元素在陣列的索引值
+      let i = this.selectData.indexOf(item);
+      // 如果有打開選取才能進行操作
+      if (this.selectText === false) {
+        if (this.selectData.includes(item)) {
+          this.selectData.splice(i, 1);
+        } else {
+          this.selectData.push(item);
+        }
+      }
     },
     onFile(e) {
       for (let item of e.target.files) {
-        // 另外設一個變數接vm的this，不然下面的this.result指向readAsDataURL
-        let _this = this;
-        // 轉換base64
-        let reader = new FileReader();
-        // 把相片名稱push到data裡，即時跑出相片信息
-        reader.addEventListener("load", function () {
-          _this.image.push(this.result);
-        });
-        reader.readAsDataURL(item);
         const form = new FormData();
         form.append("files", item);
         let config = {
@@ -78,6 +83,9 @@ export default {
         };
         axios.post("http://127.0.0.1:8080/upload", form, config).then((res) => {
           console.log("success===", res.data.successResults);
+          res.data.successResults.forEach((e) => {
+            this.image.push(e);
+          });
         });
       }
     },
@@ -85,17 +93,18 @@ export default {
       this.selectText = !this.selectText;
     },
     deleteImages() {
-      console.log(this.images);
-      // console.log(JSON.parse(JSON.stringify(this.test[0])));
-      // this.image.splice(index, 1);
       axios
         .delete("http://127.0.0.1:8080/delete", {
-          params: {
-            names: this.images,
-          },
+          data: this.selectData,
         })
         .then((res) => {
           console.log(res.data);
+          const result = Object.keys(res.data);
+
+          result.forEach((v) => {
+            let i = this.image.indexOf(v);
+            this.image.splice(i, 1);
+          });
         });
     },
   },
@@ -106,13 +115,22 @@ export default {
 .header {
   width: 100%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
-.header button {
+.headerRight button {
   background-color: grey;
   color: white;
   font-size: 1rem;
   border: none;
+}
+.headerLeft button {
+  background-color: white;
+  color: red;
+  font-size: 1rem;
+  border: none;
+  height: 100%;
+  font-size: 24px;
+  margin-left: 10px;
 }
 
 .selectBtn {
@@ -121,26 +139,28 @@ export default {
   border-radius: 10px;
 }
 .addBtn {
+  height: 100%;
   margin-right: 10px;
   border-radius: 50%;
-  padding: 0px 10px;
+  padding: 0 13px;
 }
 .item {
   width: 100%;
-  height: 670px;
+  height: 640px;
   display: flex;
   flex-wrap: wrap;
+  align-content: start;
 }
 .loadImage {
   width: 33%;
-  height: 300px;
+  height: 100px;
   display: flex;
   flex-direction: column;
   position: relative;
 }
 .loadImage img {
-  width: 100%;
-  height: 100%;
+  width: 80%;
+  height: 80%;
 }
 .selectState {
   width: 20px;
