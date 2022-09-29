@@ -21,15 +21,6 @@
         />
       </div>
     </div>
-    <div class="item">
-      <div class="loadImage" v-for="(item, index) in image" :key="index">
-        <img
-          :src="`http://127.0.0.1:8080/image/${item}`"
-          @click="selectImage(item)"
-        />
-        <div v-show="selectData.includes(item)" class="selectState">✅</div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -38,39 +29,20 @@ import axios from "axios";
 
 export default {
   name: "MyHeader",
+  props: ["image"],
   data() {
     return {
-      image: [],
       selectText: true,
-      selectData: [],
-      isShowSelect: false,
     };
-  },
-  mounted() {
-    axios
-      .get(`http://localhost:8081/images/?fromName=${this.image}&amount=50`)
-      .then((res) => {
-        res.data.forEach((e) => {
-          this.image.push(e);
-        });
-      });
   },
   methods: {
     // 模擬點擊
     uploadAvatar() {
       this.$refs.avatar.click();
     },
-    selectImage(item) {
-      // 拿到該元素在陣列的索引值
-      let i = this.selectData.indexOf(item);
-      // 如果有打開選取才能進行操作
-      if (this.selectText === false) {
-        if (this.selectData.includes(item)) {
-          this.selectData.splice(i, 1);
-        } else {
-          this.selectData.push(item);
-        }
-      }
+    toggleSelectText() {
+      this.selectText = !this.selectText;
+      this.$bus.$emit("selectText", this.selectText);
     },
     onFile(e) {
       for (let item of e.target.files) {
@@ -84,25 +56,34 @@ export default {
         axios.post("http://127.0.0.1:8080/upload", form, config).then((res) => {
           console.log("success===", res.data.successResults);
           res.data.successResults.forEach((e) => {
-            this.image.push(e);
+            const imageObj = { id: e, state: false };
+            // eslint-disable-next-line vue/no-mutating-props
+            this.image.push(imageObj);
           });
         });
       }
     },
-    toggleSelectText() {
-      this.selectText = !this.selectText;
-    },
     deleteImages() {
+      // 拿到選取成功的該相片
+      const arr = this.image.filter((v) => {
+        return v.state == true;
+      });
+      // 轉換成符合api格式陣列
+      const deleteImages = arr.map((e) => e.id);
       axios
         .delete("http://127.0.0.1:8080/delete", {
-          data: this.selectData,
+          data: deleteImages,
         })
         .then((res) => {
-          console.log(res.data);
+          // 將刪除成功res轉成陣列
           const result = Object.keys(res.data);
-
+          console.log("@result", result);
           result.forEach((v) => {
-            let i = this.image.indexOf(v);
+            // 轉換成一般陣列
+            const arr = this.image.map((e) => e.id);
+            // 拿到索引值
+            const i = arr.indexOf(v);
+            // eslint-disable-next-line vue/no-mutating-props
             this.image.splice(i, 1);
           });
         });
@@ -143,30 +124,5 @@ export default {
   margin-right: 10px;
   border-radius: 50%;
   padding: 0 13px;
-}
-.item {
-  width: 100%;
-  height: 640px;
-  display: flex;
-  flex-wrap: wrap;
-  align-content: start;
-}
-.loadImage {
-  width: 33%;
-  height: 100px;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-.loadImage img {
-  width: 80%;
-  height: 80%;
-}
-.selectState {
-  width: 20px;
-  height: 18px;
-  position: absolute;
-  bottom: 0;
-  right: 0;
 }
 </style>

@@ -1,18 +1,30 @@
 <template>
   <div class="row">
-    <div class="col">
-      <button class="btn btnYear">年</button>
-      <button class="btn btnMonth">月</button>
-      <button class="btn btnDay">日</button>
+    <div class="col" v-for="(v, i) in menu" :key="i">
+      <button
+        class="btn"
+        :class="activeColor == i ? 'active' : ''"
+        @click="btnBgc(i)"
+      >
+        {{ v }}
+      </button>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "MyList",
+  name: "MyDate",
   data() {
-    return {};
+    return {
+      menu: ["年", "月", "日"],
+      activeColor: 0, // -1表示默認不選擇顏色,0表示默認選擇第一个
+    };
+  },
+  methods: {
+    btnBgc(i) {
+      this.activeColor = i;
+    },
   },
 };
 </script>
@@ -26,20 +38,20 @@ export default {
 }
 .col {
   width: 90%;
-  border-radius: 10px;
   margin-bottom: 15px;
   background-color: lightgray;
 }
 
 .btn {
   width: 33.33%;
-  border-radius: 25px;
   border: none;
   font-size: 1.15rem;
   padding: 10px 0;
   background-color: lightgray;
 }
-.btnYear {
+.active {
+  width: 100%;
+  border-radius: 25px;
   background-color: grey;
   color: white;
 }
