@@ -7,6 +7,7 @@
       />
       <div v-show="item.state" class="selectState">✅</div>
     </div>
+    <router-view></router-view>
   </div>
 </template>
 
