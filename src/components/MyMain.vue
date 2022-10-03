@@ -4,10 +4,10 @@
       <img
         :src="`http://127.0.0.1:8080/image/${item.id}`"
         @click="selectImage(item)"
+        v-viewer="{ toolbar: false, title: false }"
       />
       <div v-show="item.state" class="selectState">✅</div>
     </div>
-    <router-view></router-view>
   </div>
 </template>
 
@@ -17,19 +17,19 @@ export default {
   props: ["image"],
   mounted() {
     this.$bus.$on("selectText", (res) => {
-      this.FromMainSelectText = res;
+      this.fromMainSelectText = res;
     });
   },
   data() {
     return {
-      FromMainSelectText: Boolean,
+      fromMainSelectText: Boolean,
     };
   },
   methods: {
     // eslint-disable-next-line vue/no-dupe-keys
     selectImage(item) {
       // 如果有打開選取才能進行操作
-      if (this.FromMainSelectText == false) {
+      if (this.fromMainSelectText == false) {
         item.state = !item.state;
       }
     },

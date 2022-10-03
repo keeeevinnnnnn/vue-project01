@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <h1>I AM GALLERY~</h1>
-  </div>
+  <div></div>
 </template>
 
 <script>

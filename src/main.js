@@ -6,13 +6,16 @@ import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import VueRouter from "vue-router";
 // 引入路由器
-
 import router from "./router";
+// 圖片處理套件
+import "viewerjs/dist/viewer.css";
+import VueViewer from "v-viewer";
 
 Vue.config.productionTip = false;
 Vue.use(VueAxios, axios);
 Vue.use(ElementUI);
 Vue.use(VueRouter);
+Vue.use(VueViewer);
 
 new Vue({
   el: "#app",

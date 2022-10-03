@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <MyHeader :image="image" />
+    <router-view></router-view>
     <MyMain :image="image" />
     <MyDate />
     <MyFooter />
