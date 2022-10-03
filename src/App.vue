@@ -9,8 +9,6 @@
 </template>
 
 <script>
-import axios from "axios";
-
 import MyHeader from "./components/MyHeader.vue";
 import MyFooter from "./components/MyFooter.vue";
 import MyMain from "./components/MyMain.vue";
@@ -28,16 +26,6 @@ export default {
     MyMain,
     MyFooter,
     MyDate,
-  },
-  mounted() {
-    axios
-      .get(`http://localhost:8081/images/?fromName=${this.image}&amount=50`)
-      .then((res) => {
-        res.data.forEach((e) => {
-          const imageObj = { id: e, state: false };
-          this.image.push(imageObj);
-        });
-      });
   },
 };
 </script>

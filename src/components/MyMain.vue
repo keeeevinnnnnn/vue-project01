@@ -12,13 +12,30 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "MyMain",
   props: ["image"],
   mounted() {
     this.$bus.$on("selectText", (res) => {
       this.fromMainSelectText = res;
+      // 選取後沒進行刪除，再次點擊切換選取狀態後，把已選取的照片都取消。
+      if (this.fromMainSelectText === true) {
+        // eslint-disable-next-line vue/no-mutating-props
+        this.image.forEach((v) => {
+          v.state = false;
+        });
+      }
     });
+    axios
+      .get(`http://localhost:8081/images/?fromName=${this.image}&amount=50`)
+      .then((res) => {
+        res.data.forEach((e) => {
+          const imageObj = { id: e, state: false };
+          // eslint-disable-next-line vue/no-mutating-props
+          this.image.push(imageObj);
+        });
+      });
   },
   data() {
     return {
