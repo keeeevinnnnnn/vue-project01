@@ -10,12 +10,17 @@ import router from "./router";
 // 圖片處理套件
 import "viewerjs/dist/viewer.css";
 import VueViewer from "v-viewer";
+// import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
+// import "bootstrap/dist/css/bootstrap.css";
+// import "bootstrap-vue/dist/bootstrap-vue.css";
 
 Vue.config.productionTip = false;
 Vue.use(VueAxios, axios);
 Vue.use(ElementUI);
 Vue.use(VueRouter);
 Vue.use(VueViewer);
+// Vue.use(IconsPlugin);
+// Vue.use(BootstrapVue);
 
 new Vue({
   el: "#app",
@@ -24,7 +29,7 @@ new Vue({
   render: (h) => h(App),
   router: router,
   beforeCreate() {
-    Vue.prototype.$bus = this; //安装全局事件总线
+    Vue.prototype.$bus = this; //安装全局事件
   },
 });
 

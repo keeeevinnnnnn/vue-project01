@@ -4,6 +4,7 @@ import VueRouter from "vue-router";
 import Video from "../components/MyVideo";
 import Gallery from "../components/MyGallery";
 import Album from "../components/MyAlbum";
+import Main from "../components/MyMain";
 
 // 創建並匯出一個路由器
 export default new VueRouter({
