@@ -4,17 +4,23 @@
       <!-- v-viewer="{ toolbar: false, title: false }" -->
       <img
         :src="`http://127.0.0.1:8080/image/${item.id}`"
-        @click="findImage(item)"
+        @click="handelImage(item, $event)"
       />
+      <BigImg v-if="showImg" @clickBigImg="closeBigImg" :imgSrc="imgSrc" />
       <div v-show="item.state" class="selectState">✅</div>
     </div>
   </div>
 </template>
 
 <script>
+import BigImg from "./BigImg.vue";
+
 export default {
-  name: "Main",
+  name: "List",
   props: ["parentImage", "selectImage", "checkAllImage"],
+  components: {
+    BigImg,
+  },
   mounted() {
     this.$bus.$on("selectText", (res) => {
       this.fromMainSelectText = res;
@@ -27,14 +33,24 @@ export default {
   data() {
     return {
       fromMainSelectText: Boolean,
+      showImg: false,
+      imgSrc: "",
     };
   },
   methods: {
-    findImage(item) {
-      // 如果有打開選取才能進行操作
+    handelImage(item, e) {
+      // 如果有打開選取才進行選取操作
       if (this.fromMainSelectText == false) {
         this.selectImage(item);
       }
+      if (e.currentTarget.src) {
+        this.imgSrc = e.currentTarget.src;
+        this.showImg = true;
+      }
+    },
+    closeBigImg() {
+      this.imgSrc = "";
+      this.showImg = false;
     },
   },
 };

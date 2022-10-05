@@ -5,7 +5,7 @@
       :parentImage="parentImage"
       :deleteImage="deleteImage"
     />
-    <Main
+    <List
       :parentImage="parentImage"
       :selectImage="selectImage"
       :checkAllImage="checkAllImage"
@@ -18,9 +18,11 @@
 <script>
 import Header from "./components/Header.vue";
 import Footer from "./components/Footer.vue";
-import Main from "./components/Main.vue";
+import List from "./components/List.vue";
 import Date from "./components/Date.vue";
 import axios from "axios";
+
+// 資料傳遞是有方向性的，在這個規則底下子層並不能主動跟父層拿取新的資料（props的變更只能由父層決定），而父層也不能主動跟子層拿取資料、或者呼叫子層的函式（父層只能監聽子層事件的觸發）。
 
 export default {
   name: "App",
@@ -31,7 +33,7 @@ export default {
   },
   components: {
     Header,
-    Main,
+    List,
     Footer,
     Date,
   },
@@ -57,6 +59,7 @@ export default {
     selectImage(v) {
       v.state = !v.state;
     },
+    // 選取後未進行操作，再次點擊關閉所有選取狀態
     checkAllImage() {
       this.parentImage.forEach((v) => {
         v.state = false;
