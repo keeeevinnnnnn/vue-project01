@@ -43,7 +43,7 @@ export default {
       if (this.fromMainSelectText == false) {
         this.selectImage(item);
       }
-      if (e.currentTarget.src) {
+      if (e.currentTarget.src && this.fromMainSelectText == true) {
         this.imgSrc = e.currentTarget.src;
         this.showImg = true;
       }
@@ -59,21 +59,24 @@ export default {
 <style scoped>
 .item {
   width: 100%;
-  height: 640px;
+  height: 73vh;
+  overflow-y: auto;
   display: flex;
   flex-wrap: wrap;
   align-content: start;
+  background-size: cover;
 }
 .loadImage {
   width: 33%;
-  height: 100px;
   display: flex;
   flex-direction: column;
   position: relative;
 }
 .loadImage img {
-  width: 80%;
-  height: 80%;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
 }
 .selectState {
   width: 20px;
