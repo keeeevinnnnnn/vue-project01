@@ -43,6 +43,7 @@ export default {
       if (this.fromMainSelectText == false) {
         this.selectImage(item);
       }
+      // 未打開選取狀態，才能點擊查看放大圖
       if (e.currentTarget.src && this.fromMainSelectText == true) {
         this.imgSrc = e.currentTarget.src;
         this.showImg = true;
