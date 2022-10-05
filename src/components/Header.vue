@@ -28,8 +28,8 @@
 import axios from "axios";
 
 export default {
-  name: "MyHeader",
-  props: ["image"],
+  name: "Header",
+  props: ["addImage", "parentImage", "deleteImage"],
   data() {
     return {
       selectText: true,
@@ -57,22 +57,22 @@ export default {
           console.log("success===", res.data.successResults);
           res.data.successResults.forEach((e) => {
             const imageObj = { id: e, state: false };
-            // eslint-disable-next-line vue/no-mutating-props
-            this.image.push(imageObj);
+            // 將image回調給父層
+            this.addImage(imageObj);
           });
         });
       }
     },
     deleteImages() {
       // 拿到選取成功的該相片
-      const arr = this.image.filter((v) => {
+      const arr = this.parentImage.filter((v) => {
         return v.state == true;
       });
       // 轉換成符合api格式陣列
-      const deleteImages = arr.map((e) => e.id);
+      const readyDeleteImages = arr.map((e) => e.id);
       axios
         .delete("http://127.0.0.1:8080/delete", {
-          data: deleteImages,
+          data: readyDeleteImages,
         })
         .then((res) => {
           // 將刪除成功res轉成陣列
@@ -80,11 +80,10 @@ export default {
           console.log("@result", result);
           result.forEach((v) => {
             // 轉換成一般陣列
-            const arr = this.image.map((e) => e.id);
+            const arr = this.parentImage.map((e) => e.id);
             // 拿到索引值
             const i = arr.indexOf(v);
-            // eslint-disable-next-line vue/no-mutating-props
-            this.image.splice(i, 1);
+            this.deleteImage(i);
           });
         });
     },

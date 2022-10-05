@@ -1,10 +1,10 @@
 <template>
   <div class="item">
-    <div class="loadImage" v-for="(item, index) in image" :key="index">
+    <div class="loadImage" v-for="(item, index) in parentImage" :key="index">
+      <!-- v-viewer="{ toolbar: false, title: false }" -->
       <img
         :src="`http://127.0.0.1:8080/image/${item.id}`"
-        @click="selectImage(item)"
-        v-viewer="{ toolbar: false, title: false }"
+        @click="findImage(item)"
       />
       <div v-show="item.state" class="selectState">✅</div>
     </div>
@@ -12,30 +12,17 @@
 </template>
 
 <script>
-import axios from "axios";
 export default {
-  name: "MyMain",
-  props: ["image"],
+  name: "Main",
+  props: ["parentImage", "selectImage", "checkAllImage"],
   mounted() {
     this.$bus.$on("selectText", (res) => {
       this.fromMainSelectText = res;
       // 選取後沒進行刪除，再次點擊切換選取狀態後，把已選取的照片都取消。
       if (this.fromMainSelectText === true) {
-        // eslint-disable-next-line vue/no-mutating-props
-        this.image.forEach((v) => {
-          v.state = false;
-        });
+        this.checkAllImage();
       }
     });
-    axios
-      .get(`http://localhost:8081/images/?fromName=${this.image}&amount=50`)
-      .then((res) => {
-        res.data.forEach((e) => {
-          const imageObj = { id: e, state: false };
-          // eslint-disable-next-line vue/no-mutating-props
-          this.image.push(imageObj);
-        });
-      });
   },
   data() {
     return {
@@ -43,11 +30,10 @@ export default {
     };
   },
   methods: {
-    // eslint-disable-next-line vue/no-dupe-keys
-    selectImage(item) {
+    findImage(item) {
       // 如果有打開選取才能進行操作
       if (this.fromMainSelectText == false) {
-        item.state = !item.state;
+        this.selectImage(item);
       }
     },
   },

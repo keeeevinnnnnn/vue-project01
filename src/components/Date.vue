@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: "MyDate",
+  name: "Date",
   data() {
     return {
       menu: ["年", "月", "日"],
