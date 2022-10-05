@@ -33,7 +33,7 @@ export default {
   z-index: 9999;
   top: 0;
   left: 0;
-  background-color: azure;
+  background-color: rgba(20, 20, 20, 0.13);
   width: 100%;
   height: 100%;
   overflow: hidden;
