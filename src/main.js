@@ -10,17 +10,14 @@ import router from "./router";
 // 圖片處理套件
 import "viewerjs/dist/viewer.css";
 import VueViewer from "v-viewer";
-// import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
-// import "bootstrap/dist/css/bootstrap.css";
-// import "bootstrap-vue/dist/bootstrap-vue.css";
+// import "bootstrap"; // 從nodeModule中載入Bootstrap
+// import "bootstrap/dist/css/bootstrap.min.css";
 
 Vue.config.productionTip = false;
 Vue.use(VueAxios, axios);
 Vue.use(ElementUI);
 Vue.use(VueRouter);
 Vue.use(VueViewer);
-// Vue.use(IconsPlugin);
-// Vue.use(BootstrapVue);
 
 new Vue({
   el: "#app",
